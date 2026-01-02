@@ -28,7 +28,7 @@
 
 > Testing on [Mistral AI Chat](https://chat.mistral.ai)
 
-https://github.com/user-attachments/assets/otp-autofill-demo.mp4
+https://github.com/Xshya19/ghostfill-extension/raw/main/demos/otp-autofill-demo.mp4
 
 [📥 Download OTP Demo](demos/otp-autofill-demo.mp4)
 
@@ -36,7 +36,7 @@ https://github.com/user-attachments/assets/otp-autofill-demo.mp4
 
 > Testing on [Qwen AI Chat](https://chat.qwen.ai)
 
-https://github.com/user-attachments/assets/activation-link-demo.mp4
+https://github.com/Xshya19/ghostfill-extension/raw/main/demos/activation-link-demo.mp4
 
 [📥 Download Link Demo](demos/activation-link-demo.mp4)
 
