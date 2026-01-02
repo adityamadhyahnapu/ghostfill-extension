@@ -1,10 +1,26 @@
-# GhostFill - Chrome Extension
+# 👻 GhostFill - AI Privacy Toolkit
 
-🛡️ **AI-powered auto-fill for disposable emails, secure passwords, and automatic OTP detection. 100% Free!**
+<div align="center">
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Chrome](https://img.shields.io/badge/Chrome-Extension-yellow)
+![GhostFill Banner](https://img.shields.io/badge/👻_GhostFill-AI_Privacy_Toolkit-6366f1?style=for-the-badge&labelColor=1a1a2e)
+
+[![GitHub stars](https://img.shields.io/github/stars/Xshya19/ghostfill-extension?style=for-the-badge&logo=github&color=yellow)](https://github.com/Xshya19/ghostfill-extension/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Xshya19/ghostfill-extension?style=for-the-badge&logo=github&color=blue)](https://github.com/Xshya19/ghostfill-extension/network)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Chrome](https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/Xshya19/ghostfill-extension)
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Groq](https://img.shields.io/badge/Groq-LLM_Powered-F55036?style=flat-square&logo=lightning&logoColor=white)](https://groq.com/)
+[![Webpack](https://img.shields.io/badge/Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black)](https://webpack.js.org/)
+
+**🛡️ AI-powered auto-fill for disposable emails, secure passwords, and automatic OTP detection. 100% Free & Open Source!**
+
+[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Contributing](#contributing)
+
+</div>
+
+---
 
 ## Features
 
