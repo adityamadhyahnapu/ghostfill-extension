@@ -1,0 +1,168 @@
+// Storage Types
+
+import { EmailAccount, EmailHistoryItem, Email } from './email.types';
+import { PasswordOptions, PasswordHistoryItem } from './password.types';
+import { IdentityProfile } from '../services/identityService';
+
+export interface UserSettings {
+    // Password settings
+    passwordDefaults: PasswordOptions;
+
+    // Email settings
+    preferredEmailService: '1secmail' | 'mailgw' | 'mailtm' | 'dropmail' | 'guerrilla' | 'tempmail' | 'templol' | 'tmailor' | 'maildrop' | 'custom';
+    autoCheckInbox: boolean;
+    checkIntervalSeconds: number;
+
+    // UI settings
+    darkMode: boolean | 'system';
+    showFloatingButton: boolean;
+    floatingButtonPosition: 'right' | 'left';
+
+    // Behavior settings
+    autoFillOTP: boolean;
+    keyboardShortcuts: boolean;
+    notifications: boolean;
+    soundEnabled: boolean;
+    autoConfirmLinks: boolean;
+
+    // Privacy settings
+    saveHistory: boolean;
+    historyRetentionDays: number;
+    clearOnClose: boolean;
+
+    // Advanced settings
+    debugMode: boolean;
+    analyticsEnabled: boolean;
+
+    // Custom Infrastructure
+    customDomain?: string;
+    customDomainUrl?: string; // Endpoint URL (e.g. Cloudflare Worker)
+    customDomainKey?: string; // Auth key/token
+
+    // AI/LLM settings
+    useLLMParser: boolean;
+    llmApiKey?: string;
+    llmModel?: string;
+}
+
+export interface LastOTP {
+    code: string;
+    source: 'email' | 'sms' | 'manual';
+    emailFrom?: string;
+    emailSubject?: string;
+    extractedAt: number;
+    usedAt?: number;
+    confidence: number;
+}
+
+export interface BehaviorData {
+    sitePreferences: Record<string, SitePreference>;
+    usagePatterns: UsagePattern[];
+    lastUpdated: number;
+}
+
+export interface SitePreference {
+    domain: string;
+    preferredEmailService?: string;
+    preferredPasswordOptions?: Partial<PasswordOptions>;
+    formAutoFillEnabled: boolean;
+    lastVisited: number;
+    visitCount: number;
+}
+
+export interface UsagePattern {
+    action: string;
+    timestamp: number;
+    context?: string;
+    duration?: number;
+}
+
+export interface StorageSchema {
+    // Current state
+    currentEmail: EmailAccount | null;
+    currentIdentity: IdentityProfile | null;
+    lastOTP: LastOTP | null;
+
+    // History
+    emailHistory: EmailHistoryItem[];
+    passwordHistory: PasswordHistoryItem[];
+    inbox: Email[];
+
+    // Settings
+    settings: UserSettings;
+
+    // AI/Learning data
+    behaviorData: BehaviorData;
+
+    // Site context (for context-aware verification)
+    // Maps tabId to SiteContext from siteContextService
+    siteContexts: Record<number, {
+        url: string;
+        domain: string;
+        tabId: number;
+        expectedType: string;
+        confidence: number;
+        hasOTPField: boolean;
+        capturedAt: number;
+        expiresAt: number;
+    }>;
+
+    // Session data
+    lastActiveTab: number;
+    extensionVersion: string;
+    installDate: number;
+    lastUpdated: number;
+}
+
+export const DEFAULT_SETTINGS: UserSettings = {
+    passwordDefaults: {
+        length: 16,
+        uppercase: true,
+        lowercase: true,
+        numbers: true,
+        symbols: true,
+        excludeAmbiguous: false,
+        excludeSimilar: false,
+    },
+    preferredEmailService: 'mailgw',
+    autoCheckInbox: true,
+    checkIntervalSeconds: 5,
+    darkMode: 'system',
+    showFloatingButton: true,
+    floatingButtonPosition: 'right',
+    autoFillOTP: true,
+    keyboardShortcuts: true,
+    notifications: true,
+    soundEnabled: true,
+    autoConfirmLinks: true,
+    saveHistory: true,
+    historyRetentionDays: 30,
+    clearOnClose: false,
+    debugMode: false,
+    analyticsEnabled: false,
+    // Custom domain defaults
+    customDomain: '',
+    customDomainUrl: '',
+    customDomainKey: '',
+    // AI/LLM defaults - user must provide their own free API key
+    useLLMParser: true,
+    llmApiKey: '', // Get free key from console.groq.com
+    llmModel: 'llama-3.1-8b-instant',
+};
+
+export const STORAGE_KEYS = {
+    CURRENT_EMAIL: 'currentEmail',
+    CURRENT_IDENTITY: 'currentIdentity',
+    LAST_OTP: 'lastOTP',
+    EMAIL_HISTORY: 'emailHistory',
+    PASSWORD_HISTORY: 'passwordHistory',
+    INBOX: 'inbox',
+    SETTINGS: 'settings',
+    BEHAVIOR_DATA: 'behaviorData',
+    LAST_ACTIVE_TAB: 'lastActiveTab',
+    EXTENSION_VERSION: 'extensionVersion',
+    INSTALL_DATE: 'installDate',
+    LAST_UPDATED: 'lastUpdated',
+} as const;
+
+export type StorageKey = keyof typeof STORAGE_KEYS;

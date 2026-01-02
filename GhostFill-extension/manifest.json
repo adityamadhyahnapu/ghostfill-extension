@@ -1,0 +1,108 @@
+{
+    "manifest_version": 3,
+    "name": "GhostFill",
+    "version": "1.0.15",
+    "description": "GhostFill: The premium privacy suite for disposable emails, secure passwords, and automatic OTP synchronization. 100% Free!",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "unlimitedStorage",
+        "clipboardWrite",
+        "clipboardRead",
+        "contextMenus",
+        "alarms",
+        "notifications",
+        "scripting",
+        "offscreen"
+    ],
+    "host_permissions": [
+        "https://*.1secmail.com/*",
+        "https://*.1secmail.net/*",
+        "https://*.1secmail.org/*",
+        "https://api.mail.tm/*",
+        "https://api.guerrillamail.com/*",
+        "https://api.tempmail.lol/*",
+        "https://api.mail.gw/*",
+        "https://api.tmailor.com/*",
+        "https://api.groq.com/*",
+        "https://*/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [
+                "content.css"
+            ],
+            "run_at": "document_idle",
+            "all_frames": true
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "/assets/icons/icon.png",
+            "32": "/assets/icons/icon.png",
+            "48": "/assets/icons/icon.png",
+            "128": "/assets/icons/icon.png"
+        },
+        "default_title": "GhostFill"
+    },
+    "options_page": "options.html",
+    "icons": {
+        "16": "/assets/icons/icon.png",
+        "32": "/assets/icons/icon.png",
+        "48": "/assets/icons/icon.png",
+        "128": "/assets/icons/icon.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "assets/*",
+                "*.css",
+                "*.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
+    "commands": {
+        "_execute_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+E",
+                "mac": "Command+Shift+E"
+            },
+            "description": "Open GhostFill"
+        },
+        "generate-email": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+M",
+                "mac": "Command+Shift+M"
+            },
+            "description": "Generate new temp email"
+        },
+        "generate-password": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+P",
+                "mac": "Command+Shift+P"
+            },
+            "description": "Generate new password"
+        },
+        "auto-fill": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+F",
+                "mac": "Command+Shift+F"
+            },
+            "description": "Auto-fill current form"
+        }
+    },
+    "default_locale": "en"
+}

@@ -1,0 +1,291 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Lock, Copy, RefreshCw, Check, Inbox, ChevronRight, Eye, EyeOff, Clock } from 'lucide-react';
+import { EmailAccount, LastOTP, Email } from '../../types';
+import { safeSendMessage } from '../../utils/messaging';
+
+interface Props {
+    onNavigate: (tab: 'email' | 'password' | 'otp') => void;
+    emailAccount: EmailAccount | null;
+    onGenerate: () => void;
+    syncing: boolean;
+    onToast: (message: string) => void;
+}
+
+const Hub: React.FC<Props> = ({ onNavigate, emailAccount, onGenerate, onToast }) => {
+    // State
+    const [emailCopied, setEmailCopied] = useState(false);
+    const [passwordCopied, setPasswordCopied] = useState(false);
+    const [password, setPassword] = useState<string>('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [isGeneratingPassword, setIsGeneratingPassword] = useState(false);
+    const [lastOTPCode, setLastOTPCode] = useState<string | null>(null);
+    const [hasNewOTP, setHasNewOTP] = useState(false);
+    const [inboxEmails, setInboxEmails] = useState<Email[]>([]);
+
+    // Generate strong 16-char password
+    const generatePassword = useCallback(async () => {
+        setIsGeneratingPassword(true);
+        try {
+            const response = await safeSendMessage({
+                action: 'GENERATE_PASSWORD',
+                payload: { length: 16, uppercase: true, lowercase: true, numbers: true, symbols: true }
+            });
+            if (response && 'result' in response && response.result && 'password' in response.result) {
+                setPassword(response.result.password);
+            }
+        } catch (error) {
+            onToast('Failed to generate password');
+        } finally {
+            setIsGeneratingPassword(false);
+        }
+    }, [onToast]);
+
+    // Check for OTP
+    const checkForNewOTP = useCallback(async () => {
+        try {
+            const response = await safeSendMessage({ action: 'GET_LAST_OTP' });
+            if (response && 'lastOTP' in response && response.lastOTP) {
+                const otp = response.lastOTP as LastOTP;
+                if (otp.code !== lastOTPCode) {
+                    setLastOTPCode(otp.code);
+                    if (Date.now() - otp.extractedAt < 120000) setHasNewOTP(true);
+                }
+            }
+        } catch (e) {
+            // Silent fail for OTP check - not critical
+        }
+    }, [lastOTPCode]);
+
+    // Check inbox and get emails
+    const checkInbox = useCallback(async () => {
+        try {
+            const response = await safeSendMessage({ action: 'CHECK_INBOX' });
+            if (response && 'emails' in response && response.emails) {
+                setInboxEmails(response.emails as Email[]);
+            }
+        } catch (e) {
+            // Silent fail for inbox check - will retry
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!password) generatePassword();
+        checkForNewOTP();
+        checkInbox();
+        const interval = setInterval(() => { checkForNewOTP(); checkInbox(); }, 5000);
+        return () => clearInterval(interval);
+    }, [generatePassword, checkForNewOTP, checkInbox, password]);
+
+    // Handlers
+    const copyEmail = async () => {
+        if (!emailAccount) return;
+        await navigator.clipboard.writeText(emailAccount.fullEmail);
+        setEmailCopied(true);
+        onToast('Email copied!');
+        setTimeout(() => setEmailCopied(false), 2000);
+    };
+
+    const copyPassword = async () => {
+        if (!password) return;
+        await navigator.clipboard.writeText(password);
+        setPasswordCopied(true);
+        onToast('Password copied!');
+        setTimeout(() => setPasswordCopied(false), 2000);
+    };
+
+    const copyOTP = async (code: string) => {
+        await navigator.clipboard.writeText(code);
+        onToast('Code copied!');
+    };
+
+    const formatRelativeTime = (timestamp: number) => {
+        const now = Date.now();
+        const diffMs = now - timestamp;
+        const diffMins = Math.floor(diffMs / 60000);
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins}m ago`;
+        const diffHours = Math.floor(diffMins / 60);
+        if (diffHours < 24) return `${diffHours}h ago`;
+        return `${Math.floor(diffHours / 24)}d ago`;
+    };
+
+    const extractOTP = (text: string): string | null => {
+        const match = text.match(/\b(\d{4,8})\b/);
+        return match ? match[1] : null;
+    };
+
+    return (
+        <div className="ghost-dashboard">
+            {/* ═══════════════════════════════════════════════════════════
+                🎴 IDENTITY CARD - Combined Email & Password
+               ═══════════════════════════════════════════════════════════ */}
+            <div className="identity-card">
+                {/* Email Row */}
+                <div className="identity-row">
+                    <div className="identity-icon">
+                        <Mail size={18} className="icon-premium" />
+                    </div>
+                    <div className="identity-content">
+                        <span className="identity-label">Email</span>
+                        <span className="identity-value">
+                            {emailAccount?.fullEmail || 'Generating...'}
+                        </span>
+                    </div>
+                    <div className="identity-actions">
+                        <motion.button
+                            className={`action-icon ${emailCopied ? 'success' : ''}`}
+                            onClick={copyEmail}
+                            whileTap={{ scale: 0.85 }}
+                            title="Copy email"
+                        >
+                            {emailCopied ? <Check size={16} /> : <Copy size={16} />}
+                        </motion.button>
+                        <motion.button
+                            className="action-icon"
+                            onClick={onGenerate}
+                            whileTap={{ scale: 0.85 }}
+                            title="New email"
+                        >
+                            <RefreshCw size={16} />
+                        </motion.button>
+                    </div>
+                </div>
+
+                <div className="identity-divider" />
+
+                {/* Password Row */}
+                <div className="identity-row">
+                    <div className="identity-icon password">
+                        <Lock size={18} className="icon-premium" />
+                    </div>
+                    <div className="identity-content">
+                        <span className="identity-label">
+                            Password
+
+                        </span>
+                        <span className="identity-value mono">
+                            {showPassword ? password : '••••••••••••••••'}
+                        </span>
+                    </div>
+                    <div className="identity-actions">
+                        <motion.button
+                            className={`action-icon ${passwordCopied ? 'success' : ''}`}
+                            onClick={copyPassword}
+                            whileTap={{ scale: 0.85 }}
+                            title="Copy password"
+                        >
+                            {passwordCopied ? <Check size={16} /> : <Copy size={16} />}
+                        </motion.button>
+                        <motion.button
+                            className="action-icon"
+                            onClick={() => setShowPassword(!showPassword)}
+                            whileTap={{ scale: 0.85 }}
+                            title={showPassword ? "Hide" : "Show"}
+                        >
+                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </motion.button>
+                        <div className="action-separator" />
+                        <motion.button
+                            className="action-icon action-danger"
+                            onClick={() => generatePassword()}
+                            whileTap={{ scale: 0.85 }}
+                            title="Generate new password (current will be lost!)"
+                            disabled={isGeneratingPassword}
+                        >
+                            <RefreshCw size={16} className={isGeneratingPassword ? 'spin' : ''} />
+                        </motion.button>
+                    </div>
+                </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════
+                📥 INBOX WITH EMAIL LIST
+               ═══════════════════════════════════════════════════════════ */}
+            <div className="inbox-section">
+                <div className="inbox-header-row">
+                    <div className="inbox-title-group">
+                        <Inbox size={20} />
+                        <span>Inbox</span>
+                        {inboxEmails.length > 0 && (
+                            <span className="inbox-count">{inboxEmails.length}</span>
+                        )}
+                    </div>
+                    <motion.button
+                        className="view-all-btn"
+                        onClick={() => {
+                            if (inboxEmails.length > 0) onNavigate('email');
+                        }}
+                        disabled={inboxEmails.length === 0}
+                        whileHover={inboxEmails.length > 0 ? { x: 2 } : {}}
+                        style={inboxEmails.length === 0 ? { opacity: 0.5, cursor: 'default' } : {}}
+                    >
+                        {inboxEmails.length > 0 ? (
+                            <>View All <ChevronRight size={14} /></>
+                        ) : (
+                            'No Messages'
+                        )}
+                    </motion.button>
+                </div>
+
+                <div className="inbox-list">
+                    {inboxEmails.length === 0 ? (
+                        /* COLLAPSED: Empty state is just a single line */
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '16px 0',
+                            gap: 8,
+                            color: 'var(--text-tertiary)',
+                            fontSize: 13
+                        }}>
+                            <Mail size={16} strokeWidth={1.5} />
+                            <span>No messages yet</span>
+                        </div>
+                    ) : (
+                        inboxEmails.slice(0, 2).map((email, index) => {
+                            const otpCode = extractOTP(email.subject + ' ' + email.body);
+                            return (
+                                <motion.div
+                                    key={email.id || index}
+                                    className="inbox-item"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.05 }}
+                                >
+                                    <div className="inbox-item-avatar">
+                                        {email.from.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="inbox-item-content">
+                                        <div className="inbox-item-header">
+                                            <span className="inbox-item-from">{email.from}</span>
+                                            <span className="inbox-item-date">
+                                                <Clock size={10} />
+                                                {formatRelativeTime(new Date(email.date).getTime())}
+                                            </span>
+                                        </div>
+                                        <div className="inbox-item-subject">{email.subject}</div>
+                                        {otpCode && (
+                                            <motion.button
+                                                className="otp-badge"
+                                                onClick={(e) => { e.stopPropagation(); copyOTP(otpCode); }}
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                            >
+                                                <span className="otp-badge-code">{otpCode}</span>
+                                                <Copy size={10} />
+                                            </motion.button>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            );
+                        })
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Hub;
